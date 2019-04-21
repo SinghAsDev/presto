@@ -100,7 +100,7 @@ public class InMemoryNodeManager
     @Override
     public AllNodes getAllNodes()
     {
-        return new AllNodes(ImmutableSet.<Node>builder().add(localNode).addAll(remoteNodes.values()).build(), ImmutableSet.of(), ImmutableSet.of(), ImmutableSet.of(localNode));
+        return new AllNodes(ImmutableSet.<Node>builder().add(localNode).addAll(remoteNodes.values()).build(), ImmutableSet.of(), ImmutableSet.of(), ImmutableSet.of(localNode), ImmutableSet.of());
     }
 
     @Override
@@ -110,10 +110,17 @@ public class InMemoryNodeManager
     }
 
     @Override
-    public Set<Node> getCoordinators()
+    public Set<Node> getActiveCoordinators()
     {
         // always use localNode as coordinator
         return ImmutableSet.of(localNode);
+    }
+
+    @Override
+    public Set<Node> getShuttingDownCoordinators()
+    {
+        // always use localNode as coordinator
+        return ImmutableSet.of();
     }
 
     @Override

@@ -59,7 +59,7 @@ public class ClusterStatsResource
 
         long activeNodes = nodeManager.getNodes(NodeState.ACTIVE).size();
         if (!isIncludeCoordinator) {
-            activeNodes -= 1;
+            activeNodes -= nodeManager.getActiveCoordinators().size();
         }
 
         long runningDrivers = 0;

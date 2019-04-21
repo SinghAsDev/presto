@@ -137,7 +137,7 @@ public class NodeScheduler
                 nodes = nodeManager.getNodes(ACTIVE);
             }
 
-            Set<String> coordinatorNodeIds = nodeManager.getCoordinators().stream()
+            Set<String> coordinatorNodeIds = nodeManager.getActiveCoordinators().stream()
                     .map(Node::getNodeIdentifier)
                     .collect(toImmutableSet());
 

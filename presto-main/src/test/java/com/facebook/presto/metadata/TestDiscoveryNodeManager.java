@@ -134,7 +134,7 @@ public class TestDiscoveryNodeManager
     public void testGetCoordinators()
     {
         InternalNodeManager manager = new DiscoveryNodeManager(selector, nodeInfo, new NoOpFailureDetector(), expectedVersion, testHttpClient, internalCommunicationConfig);
-        assertEquals(manager.getCoordinators(), ImmutableSet.of(coordinator));
+        assertEquals(manager.getActiveCoordinators(), ImmutableSet.of(coordinator));
     }
 
     @SuppressWarnings("ResultOfObjectAllocationIgnored")

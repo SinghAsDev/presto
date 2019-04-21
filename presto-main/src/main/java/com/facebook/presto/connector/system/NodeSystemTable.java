@@ -103,6 +103,6 @@ public class NodeSystemTable
 
     private boolean isCoordinator(Node node)
     {
-        return nodeManager.getCoordinators().contains(node);
+        return nodeManager.getActiveCoordinators().contains(node);
     }
 }

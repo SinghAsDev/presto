@@ -28,7 +28,9 @@ public interface InternalNodeManager
 
     Node getCurrentNode();
 
-    Set<Node> getCoordinators();
+    Set<Node> getActiveCoordinators();
+
+    Set<Node> getShuttingDownCoordinators();
 
     AllNodes getAllNodes();
 

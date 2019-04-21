@@ -35,6 +35,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.function.Consumer;
 
 import static com.facebook.presto.spi.StandardErrorCode.GENERIC_INSUFFICIENT_RESOURCES;
+import static com.facebook.presto.spi.StandardErrorCode.SERVER_SHUTTING_DOWN;
 import static com.facebook.presto.spi.StandardErrorCode.SERVER_STARTING_UP;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.util.concurrent.Futures.immediateFuture;
@@ -122,6 +123,13 @@ public class ClusterSizeMonitor
             throw new PrestoException(SERVER_STARTING_UP, format("Cluster is still initializing, there are insufficient active worker nodes (%s) to run query", currentCount));
         }
         minimumWorkerRequirementMet = true;
+    }
+
+    public synchronized void verifyActiveCoordinatorRequirement()
+    {
+        if (nodeManager.getActiveCoordinators().isEmpty()) {
+            throw new PrestoException(SERVER_SHUTTING_DOWN, "Cluster is shutting down, please retry after some time");
+        }
     }
 
     public synchronized ListenableFuture<?> waitForMinimumWorkers()

@@ -323,6 +323,7 @@ public class SqlQueryManager
         QueryExecution queryExecution;
         PreparedQuery preparedQuery;
         try {
+            clusterSizeMonitor.verifyActiveCoordinatorRequirement();
             clusterSizeMonitor.verifyInitialMinimumWorkersRequirement();
 
             if (query.length() > maxQueryLength) {

@@ -28,6 +28,7 @@ public class ServerConfig
     private boolean includeExceptionInResponse = true;
     private Duration gracePeriod = new Duration(2, MINUTES);
     private boolean enhancedErrorReporting = true;
+    private boolean isCoordinatorShutdownEnabled;
 
     public boolean isCoordinator()
     {
@@ -104,6 +105,18 @@ public class ServerConfig
     public ServerConfig setEnhancedErrorReporting(boolean value)
     {
         this.enhancedErrorReporting = value;
+        return this;
+    }
+
+    public boolean isCoordinatorShutdownEnabled()
+    {
+        return isCoordinatorShutdownEnabled;
+    }
+
+    @Config("shutdown.coordinator-shutdown-enabled")
+    public ServerConfig setCoordinatorShutdownEnabled(boolean value)
+    {
+        this.isCoordinatorShutdownEnabled = value;
         return this;
     }
 }

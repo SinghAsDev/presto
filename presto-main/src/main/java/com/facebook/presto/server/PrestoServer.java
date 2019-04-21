@@ -15,6 +15,8 @@ package com.facebook.presto.server;
 
 import com.facebook.presto.eventlistener.EventListenerManager;
 import com.facebook.presto.eventlistener.EventListenerModule;
+import com.facebook.presto.execution.QueryManager;
+import com.facebook.presto.execution.SqlQueryManager;
 import com.facebook.presto.execution.resourceGroups.ResourceGroupManager;
 import com.facebook.presto.execution.scheduler.NodeSchedulerConfig;
 import com.facebook.presto.execution.warnings.WarningCollectorModule;
@@ -132,6 +134,10 @@ public class PrestoServer
             injector.getInstance(AccessControlManager.class).loadSystemAccessControl();
             injector.getInstance(PasswordAuthenticatorManager.class).loadPasswordAuthenticator();
             injector.getInstance(EventListenerManager.class).loadConfiguredEventListener();
+            if (injector.getInstance(ServerConfig.class).isCoordinator()) {
+                SqlQueryManager sqlQueryManager = (SqlQueryManager) injector.getInstance(QueryManager.class);
+                injector.getInstance(GracefulShutdownHandler.class).registerSqlQueryManager(sqlQueryManager);
+            }
 
             injector.getInstance(Announcer.class).start();
 

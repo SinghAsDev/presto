@@ -74,7 +74,7 @@ public class SystemSplitManager
         ImmutableList.Builder<ConnectorSplit> splits = ImmutableList.builder();
         ImmutableSet.Builder<Node> nodes = ImmutableSet.builder();
         if (tableDistributionMode == ALL_COORDINATORS) {
-            nodes.addAll(nodeManager.getCoordinators());
+            nodes.addAll(nodeManager.getActiveCoordinators());
         }
         else if (tableDistributionMode == ALL_NODES) {
             nodes.addAll(nodeManager.getNodes(ACTIVE));

@@ -90,7 +90,10 @@ public final class DiscoveryNodeManager
     private AllNodes allNodes;
 
     @GuardedBy("this")
-    private Set<Node> coordinators;
+    private Set<Node> activeCoordinators;
+
+    @GuardedBy("this")
+    private Set<Node> shuttingDownCoordinators;
 
     @GuardedBy("this")
     private final List<Consumer<AllNodes>> listeners = new ArrayList<>();
@@ -212,7 +215,8 @@ public final class DiscoveryNodeManager
         ImmutableSet.Builder<Node> activeNodesBuilder = ImmutableSet.builder();
         ImmutableSet.Builder<Node> inactiveNodesBuilder = ImmutableSet.builder();
         ImmutableSet.Builder<Node> shuttingDownNodesBuilder = ImmutableSet.builder();
-        ImmutableSet.Builder<Node> coordinatorsBuilder = ImmutableSet.builder();
+        ImmutableSet.Builder<Node> activeCoordinatorsBuilder = ImmutableSet.builder();
+        ImmutableSet.Builder<Node> shuttingDownCoordinatorsBuilder = ImmutableSet.builder();
         ImmutableSetMultimap.Builder<ConnectorId, Node> byConnectorIdBuilder = ImmutableSetMultimap.builder();
 
         for (ServiceDescriptor service : services) {
@@ -227,7 +231,7 @@ public final class DiscoveryNodeManager
                     case ACTIVE:
                         activeNodesBuilder.add(node);
                         if (coordinator) {
-                            coordinatorsBuilder.add(node);
+                            activeCoordinatorsBuilder.add(node);
                         }
 
                         // record available active nodes organized by connector id
@@ -263,10 +267,11 @@ public final class DiscoveryNodeManager
         }
 
         // assign allNodes to a local variable for use in the callback below
-        AllNodes allNodes = new AllNodes(activeNodesBuilder.build(), inactiveNodesBuilder.build(), shuttingDownNodesBuilder.build(), coordinatorsBuilder.build());
+        AllNodes allNodes = new AllNodes(activeNodesBuilder.build(), inactiveNodesBuilder.build(), shuttingDownNodesBuilder.build(), activeCoordinatorsBuilder.build(), shuttingDownCoordinatorsBuilder.build());
         this.allNodes = allNodes;
         activeNodesByConnectorId = byConnectorIdBuilder.build();
-        coordinators = coordinatorsBuilder.build();
+        activeCoordinators = activeCoordinatorsBuilder.build();
+        shuttingDownCoordinators = shuttingDownCoordinatorsBuilder.build();
 
         // notify listeners
         List<Consumer<AllNodes>> listeners = ImmutableList.copyOf(this.listeners);
@@ -348,9 +353,15 @@ public final class DiscoveryNodeManager
     }
 
     @Override
-    public synchronized Set<Node> getCoordinators()
+    public synchronized Set<Node> getActiveCoordinators()
     {
-        return coordinators;
+        return activeCoordinators;
+    }
+
+    @Override
+    public synchronized Set<Node> getShuttingDownCoordinators()
+    {
+        return shuttingDownCoordinators;
     }
 
     @Override
